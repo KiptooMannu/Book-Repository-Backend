@@ -16,7 +16,7 @@ export const AuthorsTable = pgTable('authors', {
 export const BooksTable = pgTable('books', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
-  author: varchar('author', { length: 255 }).notNull(), // Changed 'author_id' to 'author'
+  author_id: integer('author_id').notNull().references(() => AuthorsTable.id, { onDelete: 'cascade' }),
   year: integer('year').notNull(), // Added 'year' column
  
 });
