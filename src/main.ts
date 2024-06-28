@@ -85,6 +85,10 @@ app.get('/ok', (c: Context) => {
 
 // Registering book routes
 app.route('/api', bookRouter);
+app.get('/api/books', handleGetBooks); // Handle GET requests to fetch books
+app.post('/api/books', handleCreateBook); // Handle POST requests to create a new book
+app.put('/api/books/:id', handleUpdateBook); // Handle PUT requests to update a book by ID
+app.delete('/api/books/:id', handleDeleteBook); // Handle DELETE requests to delete a book by ID
 
 // Logging registered routes
 console.log('Routes registered:', app.routes);
