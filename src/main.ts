@@ -13,6 +13,14 @@ app.use('*', cors({
   allowHeaders: ['Content-Type', 'Authorization']
 }));
 
+
+// Sample book data
+const books = [
+  { id: 1, title: 'Book Title 1', author: 'Author Name 1', year: 2021 },
+  { id: 2, title: 'Book Title 2', author: 'Author Name 2', year: 2022 },
+  // add more books as needed
+];
+
 // Default route
 app.get('/', async (ctx: Context) => {
   const htmlContent = `
@@ -57,3 +65,8 @@ serve({
 });
 
 console.log('Library Management System server is running at port 8000');
+
+
+
+
+
