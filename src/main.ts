@@ -7,8 +7,7 @@ import { cors } from 'hono/cors'; // Import CORS middleware
 import { handleGetBooks, handleCreateBook, handleUpdateBook, handleDeleteBook } from './Book/Book.Controller';
 import bookRouter from './Book/Book.Router'; // Ensure the correct path to your router
 
-const app = new Hono().basePath('/');
-
+const app = new Hono()
 // CORS middleware setup
 app.use('*', cors({
   origin: 'http://localhost:5173', // Adjust the origin to your frontend URL
