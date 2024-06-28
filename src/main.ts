@@ -1,72 +1,98 @@
-import { Hono, Context } from 'hono';
+import { Hono, Context } from 'hono'; // Ensure Context is imported for types
 import 'dotenv/config';
 import { serve } from '@hono/node-server';
-import { cors } from 'hono/cors';
+import { cors } from 'hono/cors'; // Import CORS middleware
 
-// Initialize Hono app with base path
-const app = new Hono().basePath('/api');
+// Importing book routers and controllers
+import { handleGetBooks, handleCreateBook, handleUpdateBook, handleDeleteBook } from './Book/Book.Controller';
+import bookRouter from './Book/Book.Router'; // Ensure the correct path to your router
 
-// Configure CORS middleware to allow requests from the frontend origin
+const app = new Hono().basePath('/');
+
+// CORS middleware setup
 app.use('*', cors({
   origin: 'http://localhost:5173', // Adjust the origin to your frontend URL
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowHeaders: ['Content-Type', 'Authorization']
 }));
 
-
-// Sample book data
-const books = [
-  { id: 1, title: 'Book Title 1', author: 'Author Name 1', year: 2021 },
-  { id: 2, title: 'Book Title 2', author: 'Author Name 2', year: 2022 },
-  // add more books as needed
-];
-
 // Default route
-app.get('/', async (ctx: Context) => {
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <!-- Your HTML content -->
-    </html>
-  `;
-  return ctx.html(htmlContent);
+app.get('/', (c: Context) => {
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Book Management System</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    background-color: #f0f0f0;
+                }
+                .container {
+                    text-align: center;
+                    padding: 50px;
+                    background-color: #fff;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                }
+                h1 {
+                    color: #333;
+                }
+                p {
+                    color: #666;
+                }
+                .btn {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    margin-top: 20px;
+                    color: #fff;
+                    background-color: #007bff;
+                    border: none;
+                    border-radius: 5px;
+                    text-decoration: none;
+                    font-size: 16px;
+                    transition: background-color 0.3s;
+                }
+                .btn:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Welcome to Book Management System</h1>
+                <p>Manage your books efficiently.</p>
+                <a href="/api/books" class="btn">View Books</a>
+            </div>
+        </body>
+        </html>
+    `;
+    return c.html(htmlContent);
 });
 
 // Status route
-app.get('/ok', async (ctx: Context) => {
-  return ctx.text('Server running');
+app.get('/ok', (c: Context) => {
+    return c.text('Server running');
 });
 
-// Example API routes (replace with your actual routes)
-app.get('/books', async (ctx: Context) => {
-  // Your logic to fetch books
-  return ctx.json({ books: [] });
-});
+// Registering book routes
+app.route('/api', bookRouter);
 
-app.post('/books', async (ctx: Context) => {
-  // Your logic to add a book
-  return ctx.json({ success: true });
-});
+// Logging registered routes
+console.log('Routes registered:', app.routes);
 
-app.put('/books/:id', async (ctx: Context) => {
-  // Your logic to update a book
-  return ctx.json({ success: true });
-});
-
-app.delete('/books/:id', async (ctx: Context) => {
-  // Your logic to delete a book
-  return ctx.json({ success: true });
-});
-
-// Start the server
+// Starting server
 serve({
-  fetch: app.fetch,
-  port: 8000,
+    fetch: app.fetch,
+    port: 8000,
 });
 
-console.log('Library Management System server is running at port 8000');
-
-
-
-
-
+console.log('Book Management System server is running at port 8000');
