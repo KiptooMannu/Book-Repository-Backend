@@ -1,23 +1,20 @@
 import { Hono, Context } from 'hono';
 import 'dotenv/config';
 import { serve } from '@hono/node-server';
+import { cors } from 'hono/cors';
 
-import bookRouter from './Book/Book.Router';
-import authorRouter from './Authors/Authors.Router';
-
+// Initialize Hono app with base path
 const app = new Hono().basePath('/api');
 
-// Middleware to handle CORS headers
-app.use(async (ctx: Context<any, any, {}>, next: () => Promise<void>) => {
-  ctx.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Set CORS header
-  ctx.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  ctx.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  await next(); // Call the next middleware or route handler
-});
+// Configure CORS middleware to allow requests from the frontend origin
+app.use('*', cors({
+  origin: 'http://localhost:5173', // Adjust the origin to your frontend URL
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Default route
-app.get('/', async (ctx: Context<any, any, {}>) => {
+app.get('/', async (ctx: Context) => {
   const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -28,19 +25,32 @@ app.get('/', async (ctx: Context<any, any, {}>) => {
 });
 
 // Status route
-app.get('/ok', async (ctx: Context<any, any, {}>) => {
+app.get('/ok', async (ctx: Context) => {
   return ctx.text('Server running');
 });
-   
 
+// Example API routes (replace with your actual routes)
+app.get('/books', async (ctx: Context) => {
+  // Your logic to fetch books
+  return ctx.json({ books: [] });
+});
 
-// Registering routes
-app.route('/', bookRouter);
-app.route('/', authorRouter);
+app.post('/books', async (ctx: Context) => {
+  // Your logic to add a book
+  return ctx.json({ success: true });
+});
 
+app.put('/books/:id', async (ctx: Context) => {
+  // Your logic to update a book
+  return ctx.json({ success: true });
+});
 
-console.log('Routes registered:', app.routes); 
-// Starting the server
+app.delete('/books/:id', async (ctx: Context) => {
+  // Your logic to delete a book
+  return ctx.json({ success: true });
+});
+
+// Start the server
 serve({
   fetch: app.fetch,
   port: 8000,
