@@ -10,7 +10,7 @@ import bookRouter from './Book/Book.Router'; // Ensure the correct path to your 
 const app = new Hono()
 // CORS middleware setup
 app.use('*', cors({
-  origin: 'http://localhost:5173', // Adjust the origin to your frontend URL
+  origin: '*', // Adjust the origin to your frontend URL
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowHeaders: ['Content-Type', 'Authorization']
 }));
